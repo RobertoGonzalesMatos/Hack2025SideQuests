@@ -52,18 +52,8 @@ export default function LeaderboardScreen() {
           resizeMode="cover"
           style={styles.backgroundImage} />
         <View style={styles.videoOverlay} />
-      {/* <ScrollView
-        contentContainerStyle={styles.scrollViewContent}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={getAllUsers} />
-        } // ✅ Pull-to-refresh logic
-      > */}
-        {/* Leaderboard Title */}
         <Text style={styles.leaderboardText}>LEADERBOARD</Text>
 
-        {/* Buttons Container */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={[styles.button, pressed ? styles.buttonPressed : null]}
@@ -83,15 +73,12 @@ export default function LeaderboardScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Header Row */}
-
         <View style={styles.headerRow}>
           <Text style={styles.columnHeaderRank}>RANK</Text>
           <Text style={styles.columnHeaderName}>NAME</Text>
           <Text style={styles.columnHeaderScore}>SCORE</Text>
         </View>
 
-        {/* Leaderboard Entries */}
 
         <ScrollView
         contentContainerStyle={styles.scrollViewContent}
@@ -99,14 +86,13 @@ export default function LeaderboardScreen() {
         showsHorizontalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={getAllUsers} />
-        } // ✅ Pull-to-refresh logic
+        } 
       >
 
-
         {usersLead
-          .sort((a, b) => b.score - a.score) // Sort by highest score
+          .sort((a, b) => b.score - a.score)
           .map((user, index) => {
-            let textColorStyle = styles.defaultText; // Default color
+            let textColorStyle = styles.defaultText;
 
             if (index === 0) {
               textColorStyle = styles.firstText;

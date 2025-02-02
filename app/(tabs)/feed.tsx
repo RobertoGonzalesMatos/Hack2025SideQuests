@@ -63,7 +63,7 @@ export default function UsersScreen() {
         showsHorizontalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={fetchUsersData} />
-        } // ✅ Pull-to-refresh logic
+        }
       >
         <Text style={styles.leaderboardText}>FEED</Text>
         
