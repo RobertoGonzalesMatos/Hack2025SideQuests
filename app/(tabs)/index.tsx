@@ -17,7 +17,7 @@ import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useState, useEffect, useRef } from "react";
 import { VideoSource, useVideoPlayer, VideoView } from "expo-video";
 import { AVPlaybackStatus, Video } from "expo-av";
@@ -43,6 +43,7 @@ import {
   where,
 } from "firebase/firestore";
 import { UserData } from "./_layout";
+import React from "react";
 
 interface quest {
   id: number;
@@ -69,6 +70,8 @@ export default function HomeScreen() {
   const [gemQuests, setGemQuests] = useState<quest[]>([]);
   const [bigQuestType, setBigQuestType] = useState<string>("");
   const [questwith, setQuestWith] = useState<string>("");
+  const [questcompleted, setquestCompleted] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const parseSidequests = (responseText: string): quest[] => {
     const quests: quest[] = [];
@@ -80,14 +83,36 @@ export default function HomeScreen() {
       if (match) {
         quests.push({
           id: index + 1,
-          description: match[1].trim().slice(3), // Extracts the challenge description
-          points: parseInt(match[2], 10), // Extracts the points
+          description: match[1].trim().slice(3),
+          points: parseInt(match[2], 10),
           disabled: false,
         });
       }
     });
 
     return quests;
+  };
+
+  const fetchQuestsCompletedQuest = async () => {
+    setRefreshing(true);
+    try {
+      const db = getFirestore();
+      const questsRef = doc(db, "metadata", "Quests");
+      const questSnap = await getDoc(questsRef);
+
+      if (questSnap.exists()) {
+        const data = questSnap.data();
+        setRefreshing(false);
+        return data.completed || false;
+      } else {
+        console.error("No such document!");
+        setRefreshing(false);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error fetching big field from quests: ", error);
+      return false;
+    }
   };
 
   const handlePropGeneration = async () => {
@@ -102,17 +127,16 @@ export default function HomeScreen() {
           {
             role: "user",
             content:
-              "Hi, please write 5 challenges/real-life sidequests that I could do to go out of my comfort zone, have fun, discover places, do a new activity or anything that you may think could be interesting to do. Separate the challenges by || and award a certain number of points depending on the difficulty from 5 to 25. Each challenge should be made with at most 12 words. Try to make each challenge as specific, creative and interesting as possible. If you can make the side quest be able to be completed in 1 day. Please make the challenges similar to the following: pet 5 dogs, talk to a stranger, ask a barista their favorite drink and order it, Cook something without a recipe, Play trivia of each other, have a goofy/thematic Photoshoot, Mock Olympics with fun competitions. Please make your response at max 500 characters and only include the challenges.",
+              "Hi, please write 5 challenges/real-life sidequests that I could do to go out of my comfort zone, have fun, discover places, do a new activity or anything that you may think could be interesting to do. Separate the challenges by || and award a certain number of points depending on the difficulty from 5 to 25. Each challenge should be made with at most 10 words. Try to make each challenge as specific, creative and interesting as possible. If you can make the side quest be able to be completed in 1 day. Please make the challenges similar to the following: pet 5 dogs, talk to a stranger, ask a barista their favorite drink and order it, Cook something without a recipe, Play trivia of each other, have a goofy/thematic Photoshoot, Mock Olympics with fun competitions. Please make your response at max 500 characters and only include the challenges.",
           },
         ],
       });
 
-      // Make sure that `completion` has the expected structure
       if (completion && completion.choices && completion.choices.length > 0) {
         if (!completion.choices[0].message.content) {
           return;
         }
-        const responseText = completion.choices[0].message.content.trim(); // Ensure it's a string
+        const responseText = completion.choices[0].message.content.trim();
         if (responseText) {
           const parsedQuests = parseSidequests(responseText);
           setGemQuests(parsedQuests);
@@ -148,8 +172,15 @@ export default function HomeScreen() {
     }
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchQuestsCompletedQuest().then((result) => setquestCompleted(result));
+    }, [])
+  );
+
   useEffect(() => {
     handlePropGeneration();
+    fetchQuestsCompletedQuest().then((result) => setquestCompleted(result));
     const interval = setInterval(() => {
       setTimeUntilMidnight(getTimeUntilMidnight());
     }, 60000);
@@ -191,25 +222,43 @@ export default function HomeScreen() {
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={fetchQuestsCompletedQuest}
+          />
+        }
       > */}
+      <ImageBackground
+          source={require("../../assets/gifs/sparkle1.gif")}
+          resizeMode="cover"
+          style={styles.backgroundImage}
+        ></ImageBackground>
+      <View style={styles.videoOverlay} />
+        
       <Text style={styles.goldenTicketAnnounceText}>GOLD-TIER QUEST!</Text>
       <TouchableOpacity
-        style={styles.goldenTicketImage}
+        style={[
+          styles.goldenTicketImage,
+          questcompleted ? styles.disabledQuest : {},
+        ]}
         onPress={() => {
           setModalVisible(true);
           setIsSpinVisible(true);
           setIsGotItVisible(false);
           lottoOpacity.value = 1.0;
         }}
+        disabled={questcompleted}
       >
         <ImageBackground
           source={require("../../assets/images/ticketGold.png")}
           style={styles.goldenTicketImage}
           resizeMode="contain"
         >
+          
           <Text style={styles.goldenTicketText}>500</Text>
         </ImageBackground>
-        <Text style={styles.goldenTicketDescriptionText}>Win a hackathon</Text>
+        <Text style={styles.goldenTicketDescriptionText}>Win a hackathon!</Text>
       </TouchableOpacity>
       <Modal
         animationType="slide"
@@ -232,13 +281,13 @@ export default function HomeScreen() {
                 >
                   <ImageBackground
                     source={require("../../assets/images/ticketGold.png")}
-                    style={styles.goldenTicketImage}
+                    style={[styles.goldenTicketImage]}
                     resizeMode="contain"
                   >
-                    <Text style={styles.goldenTicketText}>200</Text>
+                    <Text style={[styles.goldenTicketText]}>500</Text>
                   </ImageBackground>
                   <Text style={styles.goldenTicketDescriptionText}>
-                    Win a Hackathon.
+                    Win a Hackathon!
                   </Text>
                 </Animated.View>
               )}
@@ -273,7 +322,10 @@ export default function HomeScreen() {
                   onPress={() => {
                     handlePlayVideo();
                     setIsSpinVisible(false);
-                    assignOpponentOrTeam(bigQuestType).then((result) => {
+                    assignOpponentOrTeam(
+                      bigQuestType,
+                      auth.currentUser!.uid
+                    ).then((result) => {
                       setQuestWith(result);
                     });
                   }}
@@ -297,6 +349,7 @@ export default function HomeScreen() {
                       router.push({
                         pathname: "/camera",
                         params: {
+                          points: "500",
                           quest: "Quest * Win a hackathon",
                         },
                       });
@@ -322,7 +375,10 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      <View>
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
         {loading ? (
           // ✅ Show spinning wheel while loading
           <ActivityIndicator
@@ -377,21 +433,27 @@ export default function HomeScreen() {
                     {quest.points}
                   </Text>
                 </ImageBackground>
-                <Text
+                {/* <Text
                   style={[
                     styles.gemQuestDescriptionText,
                     quest.disabled && styles.disabledText,
                   ]}
                 >
                   {quest.description}
-                </Text>
+                </Text> */}
+                {quest.disabled ? (
+                  <Text style={styles.completedText}>COMPLETED!</Text>
+                  ) : (
+                  <Text style={styles.gemQuestDescriptionText}>{quest.description}</Text>
+                  )}
               </View>
             </TouchableOpacity>
           ))
         )}
+        </ScrollView>
+
       </View>
-      {/* </ScrollView> */}
-    </View>
+    // </View>
   );
 }
 const fetchQuestsBigField = async () => {
@@ -424,7 +486,7 @@ const getQuestDescription = (bigQuestType: string) => {
   }
 };
 
-const assignOpponentOrTeam = async (bigQuestType: string) => {
+const assignOpponentOrTeam = async (bigQuestType: string, uid: string) => {
   if (bigQuestType === "ffa") {
     return "";
   }
@@ -435,7 +497,9 @@ const assignOpponentOrTeam = async (bigQuestType: string) => {
 
     const users: UserData[] = [];
     querySnapshot.forEach((doc) => {
-      users.push(doc.data() as UserData);
+      if (doc.id != uid) {
+        users.push(doc.data() as UserData);
+      }
     });
 
     const randomUser = users[Math.floor(Math.random() * users.length)];
@@ -464,13 +528,13 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   disabledQuest: {
-    opacity: 0.5, // Make the whole row appear faded
+    opacity: 0.75, // Make the whole row appear faded
   },
   disabledImage: {
-    opacity: 0.3, // ✅ Reduce opacity for a "disabled" effect
+    opacity: 0.75, // ✅ Reduce opacity for a "disabled" effect
   },
   disabledText: {
-    color: "#a0a0a0", // Make text gray to indicate disabled state
+    color: "#ffffff", // Make text gray to indicate disabled state
   },
   titleContainer: {
     flexDirection: "row",
@@ -510,6 +574,7 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   goldenTicketAnnounceText: {
+    marginTop: '20%',
     color: "white",
     fontSize: 40,
     fontFamily: "PixelOperatorBold",
@@ -558,16 +623,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
-    width: "100%",
+    width: "90%",
     paddingLeft: 0,
+
   },
   gemQuestDescriptionText: {
     color: "white",
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: "PixelOperator",
     alignContent: "center",
     textAlign: "left",
     width: 250,
+    paddingRight: 13
   },
   gemQuestText: {
     fontSize: 25,
@@ -576,6 +643,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 12,
     color: "white",
+    
   },
   goldenTicketImageSmall: {
     width: 100, // Adjust the width as needed
@@ -588,8 +656,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    width: "90%",
+    width: "100%",
     height: 65,
+    backgroundColor: '#281C64',
+    margin: 4,
+    padding: 10,
+    borderRadius: 20
   },
   modalContainer: {
     flex: 1,
@@ -658,5 +730,44 @@ const styles = StyleSheet.create({
   animatedLotto: {
     width: "100%",
     height: 250,
+  },
+  backgroundVideo: {
+    left: -850, // Adjust this value to shift the video to the left
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+  },
+  videoOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(25, 3, 37, 0.55)', // Adjust the opacity as needed
+  },
+  questBox: {
+    borderWidth: 2,
+    borderColor: 'gold',
+    borderRadius: 10,
+    padding: 1,
+    marginVertical: 10,
+  },
+  completedText: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    fontFamily: 'PixelOperator-Bold'
+  },
+  scrollViewContent: {
+    marginTop: 10,
+    // alignItems: "center",
+    width: '100%'
   },
 });

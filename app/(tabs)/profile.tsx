@@ -6,6 +6,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  ImageBackground,
   Modal,
   FlatList,
   TextInput,
@@ -21,9 +22,14 @@ import { useLocalSearchParams } from "expo-router";
 import Avatar from "@/components/Avatar";
 import { User } from "firebase/auth";
 import { UserData } from "./_layout";
+import { Video } from "expo-av";
+
 import { auth } from "../_layout";
 
 export default function TabTwoScreen() {
+  const [pressed, setPressed] = useState(false);
+  const [pressed2, setPressed2] = useState(false);
+  const [pressed3, setPressed3] = useState(false);
   const [userData, setUserData] = useState({
     displayName: "Loading...",
     followers: 0,
@@ -86,10 +92,15 @@ export default function TabTwoScreen() {
 
   return (
     <View style={styles.container}>
+      <ImageBackground
+                source={require("../../assets/gifs/sparkle4.gif")}
+                resizeMode="cover"
+                style={styles.backgroundImage} />
+              <View style={styles.videoOverlay} />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {/* Profile Picture and Username */}
         <View style={styles.profileContainer}>
-          <Avatar initialAvatarUrl={userData.avatarUrl} size={100} />
+          <Avatar initialAvatarUrl={userData.avatarUrl} size={100} score={userData.score}/>
           <Text style={styles.textPOUsername}>{userData.displayName}</Text>
         </View>
 
@@ -113,25 +124,31 @@ export default function TabTwoScreen() {
         {/* <View style={styles.container}> */}
         {/* SETTINGS BUTTON */}
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, pressed ? styles.buttonPressed : null]}
           onPress={() => setModalVisible("settings")}
-        >
+          onPressIn={() => setPressed(true)}
+          onPressOut={() => setTimeout(() => setPressed(false), 75)}
+          activeOpacity={1}>
           <Text style={styles.buttonText}> SETTINGS </Text>
         </TouchableOpacity>
 
         {/* COMPLETED QUESTS BUTTON */}
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, pressed2 ? styles.buttonPressed : null]}
           onPress={() => setModalVisible("quests")}
-        >
+          onPressIn={() => setPressed2(true)}
+          onPressOut={() => setTimeout(() => setPressed2(false), 75)}
+          activeOpacity={1}>
           <Text style={styles.buttonText}> COMPLETED QUESTS </Text>
         </TouchableOpacity>
 
         {/* ABOUT BUTTON */}
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, pressed3 ? styles.buttonPressed : null]}
           onPress={() => setModalVisible("about")}
-        >
+          onPressIn={() => setPressed3(true)}
+          onPressOut={() => setTimeout(() => setPressed3(false), 75)}
+          activeOpacity={1}>
           <Text style={styles.buttonText}> ABOUT </Text>
         </TouchableOpacity>
 
@@ -273,8 +290,12 @@ const styles = StyleSheet.create({
   statsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 16,
-    width: "80%",
+    width: "90%",
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 20,
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    marginBottom: 15
   },
   statItem: {
     alignItems: "center",
@@ -311,6 +332,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 1,
   },
+  buttonPressed: {
+    backgroundColor: "#B5264B",
+    shadowOffset: { height: 15, width: 0 },
+  },
   button2: {
     flex: 0,
     backgroundColor: "#EC2C5D",
@@ -318,10 +343,10 @@ const styles = StyleSheet.create({
     marginRight: 5,
     borderRadius: 20,
     width: "80%",
-    height: 50,
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 20,
+    marginVertical: "10%",
     shadowColor: "#7F235A",
     shadowOffset: { height: 10, width: 0 },
     shadowOpacity: 1,
@@ -331,6 +356,23 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 20,
     fontFamily: "PixelOperator-Bold",
+  },
+  videoOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(36, 16, 59, 0.55)', // Adjust the opacity as needed
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '120%',
+    height: '120%',
   },
   modalContainer: {
     flex: 1,

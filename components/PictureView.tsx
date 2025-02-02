@@ -32,14 +32,12 @@ export default function PictureView({
         return;
       }
 
-      // ✅ Compress Image before conversion
       const compressedImage = await ImageManipulator.manipulateAsync(
         picture,
         [{ resize: { width: 800 } }], // Resize width to 800px while maintaining aspect ratio
         { compress: 0.6, format: ImageManipulator.SaveFormat.JPEG } // 60% compression
       );
 
-      // ✅ Convert the compressed image to Base64
       const base64String = await FileSystem.readAsStringAsync(
         compressedImage.uri,
         { encoding: FileSystem.EncodingType.Base64 }
@@ -48,21 +46,23 @@ export default function PictureView({
       const db = getFirestore();
       const userRef = doc(db, "users", user.uid);
 
-      // ✅ Fetch the current score first
       const userDoc = await getDoc(userRef);
       const currentScore = userDoc.exists() ? userDoc.data().score || 0 : 0;
 
-      // ✅ Ensure points is an integer
       const parsedPoints = parseInt(points, 10) || 0; // Convert points to an integer (default to 0 if NaN)
 
-      // ✅ Calculate new score
+      if (parsedPoints === 500) {
+        const db = getFirestore();
+        const questsRef = doc(db, "metadata", "Quests");
+        updateDoc(questsRef, { completed: true });
+      }
+
       const newScore = parseInt(currentScore, 10) + parsedPoints;
 
-      // ✅ Save the compressed Base64 string and new score to Firestore
       await updateDoc(userRef, {
         latestPost: base64String,
         latestSidequest: caption,
-        score: String(newScore), // Updated score with correct integer addition
+        score: String(newScore),
       });
 
       Alert.alert("✅ Compressed picture saved to your profile!");

@@ -4,11 +4,15 @@ import * as ImagePicker from "expo-image-picker"; // Import from Expo
 import { FlatList, GestureHandlerRootView} from "react-native-gesture-handler";
 
 
+import BronzeBadge from "@/assets/badges/badge_bronze.png";
+import SilverBadge from "@/assets/badges/badge_silver.png";
+import GoldBadge from "@/assets/badges/badge_silver.png";
+
 type AvatarProps = {
   initialAvatarUrl: string;
   size?: number;
+  score: number;
 };
-
 
 export default function Avatar({ initialAvatarUrl, size = 100 }: AvatarProps) {
   const [avatarUri, setAvatarUri] = useState(initialAvatarUrl);
@@ -23,6 +27,24 @@ export default function Avatar({ initialAvatarUrl, size = 100 }: AvatarProps) {
     {id: '5', uri: require('../assets/profile/8bit_penguin.png')},
     {id: '6', uri: require('../assets/profile/8bit_rat.png')}
   ]
+
+export default function Avatar({ initialAvatarUrl, size = 100, score }: AvatarProps) {
+  const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl);
+
+  const getBadge = () => {
+    if (score >= 100) return GoldBadge;
+    if (score >= 50) return SilverBadge;
+    return BronzeBadge; // Default badge
+  };
+
+  // Function to handle avatar change
+  const handleAvatarChange = async () => {
+    // Request media library permissions
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permission Denied", "We need access to your photo library to change the avatar.");
+      return;
+    }
 
 
   const handleAvatarChange = (uri: string) => {
@@ -93,6 +115,12 @@ export default function Avatar({ initialAvatarUrl, size = 100 }: AvatarProps) {
           </View>
         </Modal>
       </GestureHandlerRootView>
+
+      {/* Badge Overlay (Outside Avatar) */}
+      <View style={[styles.badgeContainer, { width: size * 0.35, height: size * 0.35 }]}>
+        <Image source={getBadge()} style={styles.badgeImage} />
+      </View>
+    </TouchableOpacity>
   );
 }
 
@@ -187,5 +215,23 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 20,
     fontFamily: "PixelOperator-Bold",
+  },
+});
+  badgeContainer: {
+    position: "absolute",
+    bottom: "-12%", // Moves badge slightly outside the avatar
+    right: "-2%", // Moves badge to the outside right
+    padding: 3, // Adds space around the badge
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "black",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  badgeImage: {
+    width: "150%",
+    height: "170%",
+    resizeMode: "contain",
   },
 });
