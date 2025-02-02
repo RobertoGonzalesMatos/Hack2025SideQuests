@@ -181,6 +181,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     fontFamily: "PixelOperator",
+    marginRight: 20
   },
   noPostText: {
     color: "white",
