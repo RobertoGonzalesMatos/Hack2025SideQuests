@@ -31,6 +31,8 @@ yarn-error.*
 
 # local env files
 .env*.local
+*.env
+passcode.tsx
 
 # typescript
 *.tsbuildinfo
@@ -38,4 +40,3 @@ yarn-error.*
 passcode.tsx
 
 app-example
-passcode.tsx

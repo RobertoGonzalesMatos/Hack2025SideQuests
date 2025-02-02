@@ -97,7 +97,7 @@ export default function TabTwoScreen() {
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {/* Profile Picture and Username */}
         <View style={styles.profileContainer}>
-          <Avatar initialAvatarUrl={userData.avatarUrl} size={100} />
+          <Avatar initialAvatarUrl={userData.avatarUrl} size={100} score={userData.score}/>
           <Text style={styles.textPOUsername}>{userData.displayName}</Text>
         </View>
 
