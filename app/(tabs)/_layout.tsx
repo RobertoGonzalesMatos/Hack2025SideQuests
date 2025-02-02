@@ -27,7 +27,7 @@ async function createUserDoc(user: User) {
       followers: 0,
       following: 0,
       score: 0,
-      avatarUrl: "https://hackatbrown.org/img/logo.png", // Default avatar
+      avatarUrl: "../../assets/profile/hablogo.png",
       latestSidequest: "none",
       followingUsers: [],
     });
