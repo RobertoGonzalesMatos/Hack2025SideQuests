@@ -102,7 +102,7 @@ export default function TabTwoScreen() {
         {/* Profile Picture and Username */}
         <View style={styles.profileContainer}>
           <Avatar
-            initialAvatarUrl={userData.avatarUrl}
+            initialAvatar={userData.avatarUrl}
             size={100}
             score={userData.score}
           />

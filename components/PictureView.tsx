@@ -62,7 +62,7 @@ export default function PictureView({
       await updateDoc(userRef, {
         latestPost: base64String,
         latestSidequest: caption,
-        score: String(newScore),
+        score: newScore,
       });
 
       Alert.alert("✅ Compressed picture saved to your profile!");

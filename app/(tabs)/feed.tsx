@@ -5,11 +5,12 @@ import {
   View,
   Text,
   Image,
-  RefreshControl, ImageBackground
+  RefreshControl,
+  ImageBackground,
 } from "react-native";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import Avatar from "@/components/Avatar";
-import { Video } from 'expo-av';
+import { Video } from "expo-av";
 
 interface UserData {
   displayName: string;
@@ -53,10 +54,11 @@ export default function UsersScreen() {
   return (
     <View style={styles.container}>
       <ImageBackground
-                source={require("../../assets/gifs/sparkle3.gif")}
-                resizeMode="cover"
-                style={styles.backgroundImage} />
-              <View style={styles.videoOverlay} />
+        source={require("../../assets/gifs/sparkle3.gif")}
+        resizeMode="cover"
+        style={styles.backgroundImage}
+      />
+      <View style={styles.videoOverlay} />
       <ScrollView
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
@@ -66,11 +68,15 @@ export default function UsersScreen() {
         }
       >
         <Text style={styles.leaderboardText}>FEED</Text>
-        
+
         {usersData.map((user, index) => (
           <View key={index} style={styles.userContainer}>
             <View style={styles.profileContainer}>
-              <Avatar initialAvatarUrl={user.avatarUrl} size={50} score={user.score} />
+              <Avatar
+                initialAvatar={user.avatarUrl}
+                size={50}
+                score={user.score}
+              />
               <Text style={styles.textPOUsername}>{user.displayName}</Text>
             </View>
             <View style={styles.imageContainer}>
@@ -86,7 +92,6 @@ export default function UsersScreen() {
                 <Text style={styles.sidequestText}>{user.latestSidequest}</Text>
               </View>
             </View>
-
           </View>
         ))}
       </ScrollView>
@@ -99,11 +104,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 40,
     width: "110%",
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: "rgba(0,0,0,0.6)",
     borderRadius: 20,
     padding: 10,
     paddingBottom: 30,
-    
   },
 
   imageContainer: {
@@ -127,7 +131,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginBottom: 10,
     width: "100%",
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   statsContainer: {
     flexDirection: "row",
@@ -181,30 +185,29 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   videoOverlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(77, 40, 105, 0.55)', // Adjust the opacity as needed
+    backgroundColor: "rgba(77, 40, 105, 0.55)", // Adjust the opacity as needed
   },
   backgroundImage: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    width: '100%',
-    height: '100%',
-    
+    width: "100%",
+    height: "100%",
   },
   horizontalLine: {
     height: 1,
-    backgroundColor: 'lightgray',
+    backgroundColor: "lightgray",
     opacity: 0.5,
     marginTop: 50,
-    width: '100%',
-    alignSelf: 'center',
+    width: "100%",
+    alignSelf: "center",
   },
   leaderboardText: {
     color: "white",

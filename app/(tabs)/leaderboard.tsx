@@ -6,7 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
-  ImageBackground
+  ImageBackground,
 } from "react-native";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { db } from "../_layout";
@@ -48,47 +48,46 @@ export default function LeaderboardScreen() {
   return (
     <View style={styles.container}>
       <ImageBackground
-          source={require("../../assets/gifs/sparkle2.gif")}
-          resizeMode="cover"
-          style={styles.backgroundImage} />
-        <View style={styles.videoOverlay} />
-        <Text style={styles.leaderboardText}>LEADERBOARD</Text>
+        source={require("../../assets/gifs/sparkle2.gif")}
+        resizeMode="cover"
+        style={styles.backgroundImage}
+      />
+      <View style={styles.videoOverlay} />
+      <Text style={styles.leaderboardText}>LEADERBOARD</Text>
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.button, pressed ? styles.buttonPressed : null]}
-            onPressIn={() => setPressed(true)}
-            onPressOut={() => setTimeout(() => setPressed(false), 75)}
-            activeOpacity={1}
-          >
-            <Text style={styles.buttonText}> TASKS </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, pressed2 ? styles.buttonPressed : null]}
-            onPressIn={() => setPressed2(true)}
-            onPressOut={() => setTimeout(() => setPressed2(false), 75)}
-            activeOpacity={1}
-          >
-            <Text style={styles.buttonText}> STREAKS </Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, pressed ? styles.buttonPressed : null]}
+          onPressIn={() => setPressed(true)}
+          onPressOut={() => setTimeout(() => setPressed(false), 75)}
+          activeOpacity={1}
+        >
+          <Text style={styles.buttonText}> TASKS </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, pressed2 ? styles.buttonPressed : null]}
+          onPressIn={() => setPressed2(true)}
+          onPressOut={() => setTimeout(() => setPressed2(false), 75)}
+          activeOpacity={1}
+        >
+          <Text style={styles.buttonText}> STREAKS </Text>
+        </TouchableOpacity>
+      </View>
 
-        <View style={styles.headerRow}>
-          <Text style={styles.columnHeaderRank}>RANK</Text>
-          <Text style={styles.columnHeaderName}>NAME</Text>
-          <Text style={styles.columnHeaderScore}>SCORE</Text>
-        </View>
+      <View style={styles.headerRow}>
+        <Text style={styles.columnHeaderRank}>RANK</Text>
+        <Text style={styles.columnHeaderName}>NAME</Text>
+        <Text style={styles.columnHeaderScore}>SCORE</Text>
+      </View>
 
-
-        <ScrollView
+      <ScrollView
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={getAllUsers} />
-        } 
+        }
       >
-
         {usersLead
           .sort((a, b) => b.score - a.score)
           .map((user, index) => {
@@ -103,19 +102,17 @@ export default function LeaderboardScreen() {
             }
 
             return (
-
               <View key={index} style={styles.rankingBox}>
-              <View  style={styles.leaderboardRow}>
-                <Text style={[styles.rank, textColorStyle]}>{index + 1}</Text>
-                <Text style={[styles.leaderboardName, textColorStyle]}>
-                  {user.displayName}
-                </Text>
-                <Text style={[styles.leaderboardScore, textColorStyle]}>
-                  {user.score}
-                </Text>
+                <View style={styles.leaderboardRow}>
+                  <Text style={[styles.rank, textColorStyle]}>{index + 1}</Text>
+                  <Text style={[styles.leaderboardName, textColorStyle]}>
+                    {user.displayName}
+                  </Text>
+                  <Text style={[styles.leaderboardScore, textColorStyle]}>
+                    {user.score}
+                  </Text>
+                </View>
               </View>
-              </View>
-
             );
           })}
       </ScrollView>
@@ -260,27 +257,26 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   videoOverlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(36, 16, 59, 0.55)', // Adjust the opacity as needed
+    backgroundColor: "rgba(36, 16, 59, 0.55)", // Adjust the opacity as needed
   },
   backgroundImage: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    width: '100%',
-    height: '110%',
+    width: "100%",
+    height: "110%",
   },
   rankingBox: {
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
     borderRadius: 5,
-    alignItems: 'center',
-    marginVertical: 5
-    
+    alignItems: "center",
+    marginVertical: 5,
   },
 });

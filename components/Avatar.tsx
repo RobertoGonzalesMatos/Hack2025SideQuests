@@ -27,7 +27,7 @@ type AvatarProps = {
 };
 
 export default function Avatar({
-  initialAvatar = Bear,
+  initialAvatar,
   size = 100,
   score,
 }: AvatarProps) {
