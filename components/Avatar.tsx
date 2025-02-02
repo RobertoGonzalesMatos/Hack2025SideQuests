@@ -14,22 +14,9 @@ type AvatarProps = {
   score: number;
 };
 
-export default function Avatar({ initialAvatarUrl, size = 100 }: AvatarProps) {
-  const [avatarUri, setAvatarUri] = useState(initialAvatarUrl);
-  const [modalVisible, setModalVisible] = useState(false);
-
-
-  const avatarImages = [
-    {id: '1', uri: require('../assets/profile/8bit_bear.png')},
-    {id: '2', uri: require('../assets/profile/8bit_cat.png')},
-    {id: '3', uri: require('../assets/profile/8bit_chicken.png')},
-    {id: '4', uri: require('../assets/profile/8bit_corgi.png')},
-    {id: '5', uri: require('../assets/profile/8bit_penguin.png')},
-    {id: '6', uri: require('../assets/profile/8bit_rat.png')}
-  ]
-
 export default function Avatar({ initialAvatarUrl, size = 100, score }: AvatarProps) {
   const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl);
+  const[modalVisible, setModalVisible] = useState(false);
 
   const getBadge = () => {
     if (score >= 100) return GoldBadge;
@@ -48,7 +35,7 @@ export default function Avatar({ initialAvatarUrl, size = 100, score }: AvatarPr
 
 
   const handleAvatarChange = (uri: string) => {
-    setAvatarUri(uri);
+    setAvatarUrl(uri);
     setModalVisible(false);
     }
 
@@ -57,7 +44,7 @@ export default function Avatar({ initialAvatarUrl, size = 100, score }: AvatarPr
     <GestureHandlerRootView style={{ height: 120 }}>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
             <Image
-              source={{ uri: avatarUri }}
+              source={{ uri: avatarUrl }}
               style={[styles.image, { width: size, height: size, borderRadius: size / 2 }]}
             />
         </TouchableOpacity>
@@ -114,14 +101,15 @@ export default function Avatar({ initialAvatarUrl, size = 100, score }: AvatarPr
             </View>
           </View>
         </Modal>
-      </GestureHandlerRootView>
-
-      {/* Badge Overlay (Outside Avatar) */}
+    <TouchableOpacity>
       <View style={[styles.badgeContainer, { width: size * 0.35, height: size * 0.35 }]}>
         <Image source={getBadge()} style={styles.badgeImage} />
       </View>
     </TouchableOpacity>
+      </GestureHandlerRootView>
+    
   );
+}
 }
 
 
@@ -216,7 +204,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: "PixelOperator-Bold",
   },
-});
   badgeContainer: {
     position: "absolute",
     bottom: "-12%", // Moves badge slightly outside the avatar
