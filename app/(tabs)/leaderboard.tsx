@@ -181,7 +181,8 @@ const styles = StyleSheet.create({
   buttonPressed: {
     backgroundColor: "#B5264B",
     shadowOffset: { height: 15, width: 0 },
-    marginBottom: "20%",
+    marginBottom: "1%",
+    marginVertical: 0,
   },
   buttonText: {
     color: "white",

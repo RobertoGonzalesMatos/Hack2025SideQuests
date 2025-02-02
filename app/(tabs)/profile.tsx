@@ -27,6 +27,9 @@ import { Video } from "expo-av";
 import { auth } from "../_layout";
 
 export default function TabTwoScreen() {
+  const [pressed, setPressed] = useState(false);
+  const [pressed2, setPressed2] = useState(false);
+  const [pressed3, setPressed3] = useState(false);
   const [userData, setUserData] = useState({
     displayName: "Loading...",
     followers: 0,
@@ -121,25 +124,31 @@ export default function TabTwoScreen() {
         {/* <View style={styles.container}> */}
         {/* SETTINGS BUTTON */}
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, pressed ? styles.buttonPressed : null]}
           onPress={() => setModalVisible("settings")}
-        >
+          onPressIn={() => setPressed(true)}
+          onPressOut={() => setTimeout(() => setPressed(false), 75)}
+          activeOpacity={1}>
           <Text style={styles.buttonText}> SETTINGS </Text>
         </TouchableOpacity>
 
         {/* COMPLETED QUESTS BUTTON */}
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, pressed2 ? styles.buttonPressed : null]}
           onPress={() => setModalVisible("quests")}
-        >
+          onPressIn={() => setPressed2(true)}
+          onPressOut={() => setTimeout(() => setPressed2(false), 75)}
+          activeOpacity={1}>
           <Text style={styles.buttonText}> COMPLETED QUESTS </Text>
         </TouchableOpacity>
 
         {/* ABOUT BUTTON */}
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, pressed3 ? styles.buttonPressed : null]}
           onPress={() => setModalVisible("about")}
-        >
+          onPressIn={() => setPressed3(true)}
+          onPressOut={() => setTimeout(() => setPressed3(false), 75)}
+          activeOpacity={1}>
           <Text style={styles.buttonText}> ABOUT </Text>
         </TouchableOpacity>
 
@@ -319,6 +328,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 1,
   },
+  buttonPressed: {
+    backgroundColor: "#B5264B",
+    shadowOffset: { height: 15, width: 0 },
+  },
   button2: {
     flex: 0,
     backgroundColor: "#EC2C5D",
@@ -326,10 +339,10 @@ const styles = StyleSheet.create({
     marginRight: 5,
     borderRadius: 20,
     width: "80%",
-    height: 50,
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 20,
+    marginVertical: "10%",
     shadowColor: "#7F235A",
     shadowOffset: { height: 10, width: 0 },
     shadowOpacity: 1,
