@@ -69,7 +69,7 @@ export default function TabLayout() {
     return () => unsubscribe(); // Clean up the listener on unmount
   }, []);
   if (isLoading) return <></>;
-  if (isFirstTime) return <Redirect href={"/onboarding"} />;
+  if (isFirstTime) return <Redirect href={"/login"} />;
 
   return (
     <Tabs
