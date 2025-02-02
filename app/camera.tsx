@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "black",
+    backgroundColor: "rgba(40,28,100,1)",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -154,13 +154,14 @@ const styles = StyleSheet.create({
   questContainer: {
     padding: 10,
     borderRadius: 10,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "rgba(40,28,100, 0.5)",
     marginVertical: 10,
     marginHorizontal: 20,
   },
   text: {
-    fontSize: 16,
-    color: "black",
+    fontSize: 20,
+    color: "white",
     alignSelf: "center",
+    fontFamily: 'PixelOperator'
   },
 });
