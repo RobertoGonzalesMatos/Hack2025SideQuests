@@ -35,7 +35,7 @@ export default function TabTwoScreen() {
     followers: 0,
     following: 0,
     score: 0,
-    avatarUrl: "https://hackatbrown.org/img/logo.png",
+    avatarUrl: "../../assets/profile/hablogo.png",
     latestPost: "",
   });
   const [modalVisible, setModalVisible] = useState<string | null>(null);
