@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
 
   imageContainer: {
     position: "relative",
+    marginTop: -55
   },
   container: {
     flex: 1,
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     display: "flex",
     flexDirection: "row",
-    marginTop: 0,
+    marginTop: 10,
     marginBottom: 10,
     width: "100%",
     paddingHorizontal: 20,
@@ -148,9 +149,10 @@ const styles = StyleSheet.create({
     fontFamily: "PixelOperator",
   },
   textPOUsername: {
-    marginTop: 15,
+    marginTop: -55,
     marginBottom: 15,
     marginInline: 15,
+    marginRight: 5,
     color: "white",
     fontSize: 23,
     fontFamily: "PixelOperator-Bold",
