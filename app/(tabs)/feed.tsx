@@ -5,10 +5,11 @@ import {
   View,
   Text,
   Image,
-  RefreshControl,
+  RefreshControl, ImageBackground
 } from "react-native";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import Avatar from "@/components/Avatar";
+import { Video } from 'expo-av';
 
 interface UserData {
   displayName: string;
@@ -51,6 +52,11 @@ export default function UsersScreen() {
 
   return (
     <View style={styles.container}>
+      <ImageBackground
+                source={require("../../assets/gifs/sparkle3.gif")}
+                resizeMode="cover"
+                style={styles.backgroundImage} />
+              <View style={styles.videoOverlay} />
       <ScrollView
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
@@ -59,10 +65,12 @@ export default function UsersScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={fetchUsersData} />
         }
       >
+        <Text style={styles.leaderboardText}>FEED</Text>
+        
         {usersData.map((user, index) => (
           <View key={index} style={styles.userContainer}>
             <View style={styles.profileContainer}>
-              <Avatar initialAvatarUrl={user.avatarUrl} size={60} />
+              <Avatar initialAvatarUrl={user.avatarUrl} size={50} />
               <Text style={styles.textPOUsername}>{user.displayName}</Text>
             </View>
             <View style={styles.imageContainer}>
@@ -78,6 +86,7 @@ export default function UsersScreen() {
                 <Text style={styles.sidequestText}>{user.latestSidequest}</Text>
               </View>
             </View>
+
           </View>
         ))}
       </ScrollView>
@@ -89,7 +98,12 @@ const styles = StyleSheet.create({
   userContainer: {
     alignItems: "center",
     marginBottom: 40,
-    width: "100%",
+    width: "110%",
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 20,
+    padding: 10,
+    paddingBottom: 30,
+    
   },
 
   imageContainer: {
@@ -106,13 +120,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   profileContainer: {
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "flex-start",
     display: "flex",
     flexDirection: "row",
-    marginTop: 10,
+    marginTop: 0,
     marginBottom: 10,
     width: "100%",
+    paddingHorizontal: 20
   },
   statsContainer: {
     flexDirection: "row",
@@ -133,7 +148,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     marginInline: 15,
     color: "white",
-    fontSize: 30,
+    fontSize: 23,
     fontFamily: "PixelOperator-Bold",
   },
   textSar: {
@@ -164,5 +179,38 @@ const styles = StyleSheet.create({
   noPostText: {
     color: "white",
     marginTop: 20,
+  },
+  videoOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(77, 40, 105, 0.55)', // Adjust the opacity as needed
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+    
+  },
+  horizontalLine: {
+    height: 1,
+    backgroundColor: 'lightgray',
+    opacity: 0.5,
+    marginTop: 50,
+    width: '100%',
+    alignSelf: 'center',
+  },
+  leaderboardText: {
+    color: "white",
+    fontSize: 40,
+    fontFamily: "PixelOperator-Bold",
+    textAlign: "center",
+    marginBottom: 20, // Adds space between the title and buttons
   },
 });

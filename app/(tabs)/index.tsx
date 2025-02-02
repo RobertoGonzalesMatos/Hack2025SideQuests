@@ -127,7 +127,7 @@ export default function HomeScreen() {
           {
             role: "user",
             content:
-              "Hi, please write 5 challenges/real-life sidequests that I could do to go out of my comfort zone, have fun, discover places, do a new activity or anything that you may think could be interesting to do. Separate the challenges by || and award a certain number of points depending on the difficulty from 5 to 25. Each challenge should be made with at most 12 words. Try to make each challenge as specific, creative and interesting as possible. If you can make the side quest be able to be completed in 1 day. Please make the challenges similar to the following: pet 5 dogs, talk to a stranger, ask a barista their favorite drink and order it, Cook something without a recipe, Play trivia of each other, have a goofy/thematic Photoshoot, Mock Olympics with fun competitions. Please make your response at max 500 characters and only include the challenges.",
+              "Hi, please write 5 challenges/real-life sidequests that I could do to go out of my comfort zone, have fun, discover places, do a new activity or anything that you may think could be interesting to do. Separate the challenges by || and award a certain number of points depending on the difficulty from 5 to 25. Each challenge should be made with at most 10 words. Try to make each challenge as specific, creative and interesting as possible. If you can make the side quest be able to be completed in 1 day. Please make the challenges similar to the following: pet 5 dogs, talk to a stranger, ask a barista their favorite drink and order it, Cook something without a recipe, Play trivia of each other, have a goofy/thematic Photoshoot, Mock Olympics with fun competitions. Please make your response at max 500 characters and only include the challenges.",
           },
         ],
       });
@@ -229,6 +229,13 @@ export default function HomeScreen() {
           />
         }
       > */}
+      <ImageBackground
+          source={require("../../assets/gifs/sparkle1.gif")}
+          resizeMode="cover"
+          style={styles.backgroundImage}
+        ></ImageBackground>
+      <View style={styles.videoOverlay} />
+        
       <Text style={styles.goldenTicketAnnounceText}>GOLD-TIER QUEST!</Text>
       <TouchableOpacity
         style={[
@@ -248,9 +255,10 @@ export default function HomeScreen() {
           style={styles.goldenTicketImage}
           resizeMode="contain"
         >
+          
           <Text style={styles.goldenTicketText}>500</Text>
         </ImageBackground>
-        <Text style={styles.goldenTicketDescriptionText}>Win a hackathon</Text>
+        <Text style={styles.goldenTicketDescriptionText}>Win a hackathon!</Text>
       </TouchableOpacity>
       <Modal
         animationType="slide"
@@ -279,7 +287,7 @@ export default function HomeScreen() {
                     <Text style={[styles.goldenTicketText]}>500</Text>
                   </ImageBackground>
                   <Text style={styles.goldenTicketDescriptionText}>
-                    Win a Hackathon.
+                    Win a Hackathon!
                   </Text>
                 </Animated.View>
               )}
@@ -367,7 +375,10 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      <View>
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
         {loading ? (
           // ✅ Show spinning wheel while loading
           <ActivityIndicator
@@ -422,21 +433,27 @@ export default function HomeScreen() {
                     {quest.points}
                   </Text>
                 </ImageBackground>
-                <Text
+                {/* <Text
                   style={[
                     styles.gemQuestDescriptionText,
                     quest.disabled && styles.disabledText,
                   ]}
                 >
                   {quest.description}
-                </Text>
+                </Text> */}
+                {quest.disabled ? (
+                  <Text style={styles.completedText}>COMPLETED!</Text>
+                  ) : (
+                  <Text style={styles.gemQuestDescriptionText}>{quest.description}</Text>
+                  )}
               </View>
             </TouchableOpacity>
           ))
         )}
+        </ScrollView>
+
       </View>
-      {/* </ScrollView> */}
-    </View>
+    // </View>
   );
 }
 const fetchQuestsBigField = async () => {
@@ -511,13 +528,13 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   disabledQuest: {
-    opacity: 0.5, // Make the whole row appear faded
+    opacity: 0.75, // Make the whole row appear faded
   },
   disabledImage: {
-    opacity: 0.3, // ✅ Reduce opacity for a "disabled" effect
+    opacity: 0.75, // ✅ Reduce opacity for a "disabled" effect
   },
   disabledText: {
-    color: "#a0a0a0", // Make text gray to indicate disabled state
+    color: "#ffffff", // Make text gray to indicate disabled state
   },
   titleContainer: {
     flexDirection: "row",
@@ -557,6 +574,7 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   goldenTicketAnnounceText: {
+    marginTop: '20%',
     color: "white",
     fontSize: 40,
     fontFamily: "PixelOperatorBold",
@@ -605,16 +623,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
-    width: "100%",
+    width: "90%",
     paddingLeft: 0,
+
   },
   gemQuestDescriptionText: {
     color: "white",
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: "PixelOperator",
     alignContent: "center",
     textAlign: "left",
     width: 250,
+    paddingRight: 13
   },
   gemQuestText: {
     fontSize: 25,
@@ -623,6 +643,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 12,
     color: "white",
+    
   },
   goldenTicketImageSmall: {
     width: 100, // Adjust the width as needed
@@ -635,8 +656,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    width: "90%",
+    width: "100%",
     height: 65,
+    backgroundColor: '#281C64',
+    margin: 4,
+    padding: 10,
+    borderRadius: 20
   },
   modalContainer: {
     flex: 1,
@@ -705,5 +730,44 @@ const styles = StyleSheet.create({
   animatedLotto: {
     width: "100%",
     height: 250,
+  },
+  backgroundVideo: {
+    left: -850, // Adjust this value to shift the video to the left
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+  },
+  videoOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(25, 3, 37, 0.55)', // Adjust the opacity as needed
+  },
+  questBox: {
+    borderWidth: 2,
+    borderColor: 'gold',
+    borderRadius: 10,
+    padding: 1,
+    marginVertical: 10,
+  },
+  completedText: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    fontFamily: 'PixelOperator-Bold'
+  },
+  scrollViewContent: {
+    marginTop: 10,
+    // alignItems: "center",
+    width: '100%'
   },
 });

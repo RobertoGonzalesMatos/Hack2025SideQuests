@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
+  ImageBackground
 } from "react-native";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { db } from "../_layout";
@@ -46,14 +47,11 @@ export default function LeaderboardScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollViewContent}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={getAllUsers} />
-        }
-      >
+      <ImageBackground
+          source={require("../../assets/gifs/sparkle2.gif")}
+          resizeMode="cover"
+          style={styles.backgroundImage} />
+        <View style={styles.videoOverlay} />
         <Text style={styles.leaderboardText}>LEADERBOARD</Text>
 
         <View style={styles.buttonContainer}>
@@ -71,7 +69,7 @@ export default function LeaderboardScreen() {
             onPressOut={() => setTimeout(() => setPressed2(false), 75)}
             activeOpacity={1}
           >
-            <Text style={styles.buttonText}> STREAK </Text>
+            <Text style={styles.buttonText}> STREAKS </Text>
           </TouchableOpacity>
         </View>
 
@@ -80,6 +78,16 @@ export default function LeaderboardScreen() {
           <Text style={styles.columnHeaderName}>NAME</Text>
           <Text style={styles.columnHeaderScore}>SCORE</Text>
         </View>
+
+
+        <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={getAllUsers} />
+        } 
+      >
 
         {usersLead
           .sort((a, b) => b.score - a.score)
@@ -95,7 +103,9 @@ export default function LeaderboardScreen() {
             }
 
             return (
-              <View key={index} style={styles.leaderboardRow}>
+
+              <View key={index} style={styles.rankingBox}>
+              <View  style={styles.leaderboardRow}>
                 <Text style={[styles.rank, textColorStyle]}>{index + 1}</Text>
                 <Text style={[styles.leaderboardName, textColorStyle]}>
                   {user.displayName}
@@ -104,6 +114,8 @@ export default function LeaderboardScreen() {
                   {user.score}
                 </Text>
               </View>
+              </View>
+
             );
           })}
       </ScrollView>
@@ -116,7 +128,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#281C64",
     alignItems: "center",
-    paddingTop: 50, // Moves everything down a bit
+    paddingTop: 100, // Moves everything down a bit
   },
   scrollViewContent: {
     padding: 16,
@@ -127,26 +139,26 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontFamily: "PixelOperator-Bold",
     textAlign: "center",
-    marginBottom: 20, // Adds space between the title and buttons
+    marginBottom: 0, // Adds space between the title and buttons
   },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "95%",
-    marginTop: "2%",
+    marginTop: "0%",
   },
   button: {
     backgroundColor: "#EC2C5D",
-    marginLeft: 5,
-    marginRight: 5,
+    marginLeft: 15,
+    marginRight: 15,
     borderRadius: 20,
     width: "40%",
-    height: "30%",
+    height: "35%",
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
-    marginVertical: 20,
-    marginBottom: "20%",
+    marginVertical: 0,
+    marginBottom: "1%",
     shadowColor: "#7F235A",
     shadowOffset: { height: 15, width: 0 },
     shadowOpacity: 1,
@@ -154,12 +166,12 @@ const styles = StyleSheet.create({
   },
   buttonPressed: {
     backgroundColor: "#B5264B",
-    shadowOffset: { height: 5, width: 0 },
+    shadowOffset: { height: 15, width: 0 },
     marginBottom: "20%",
   },
   buttonText: {
     color: "white",
-    fontSize: 20,
+    fontSize: 25,
     fontFamily: "PixelOperator-Bold",
   },
   headerRow: {
@@ -168,8 +180,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "90%",
     paddingTop: 0,
-    paddingBottom: 10,
-    marginBottom: 10,
+    paddingBottom: 0,
+    marginBottom: 0,
   },
   columnHeaderRank: {
     color: "white",
@@ -223,20 +235,21 @@ const styles = StyleSheet.create({
   },
   firstText: {
     color: "#EC2C5D",
-    fontSize: 18,
-    fontFamily: "SairaRegular",
+    fontSize: 20,
+    // fontFamily: "SairaRegular",
+    fontFamily: "SairaBold",
     textAlign: "center",
   },
   secondText: {
     color: "#FC6840",
-    fontSize: 18,
-    fontFamily: "SairaRegular",
+    fontSize: 20,
+    fontFamily: "SairaBold",
     textAlign: "center",
   },
   thirdText: {
     color: "#F8C93D",
-    fontSize: 18,
-    fontFamily: "SairaRegular",
+    fontSize: 20,
+    fontFamily: "SairaBold",
     textAlign: "center",
   },
   defaultText: {
@@ -244,5 +257,29 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "SairaBlack",
     textAlign: "center",
+  },
+  videoOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(36, 16, 59, 0.55)', // Adjust the opacity as needed
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '110%',
+  },
+  rankingBox: {
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    borderRadius: 5,
+    alignItems: 'center',
+    marginVertical: 5
+    
   },
 });

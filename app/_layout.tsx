@@ -17,6 +17,7 @@ import * as firebaseAuth from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeAuth, onAuthStateChanged } from "firebase/auth";
 
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
