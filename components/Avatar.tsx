@@ -134,8 +134,8 @@ const styles = StyleSheet.create({
   },
   badgeContainer: {
     position: "absolute",
-    bottom: "-12%",
-    right: "-2%",
+    bottom: "0%",
+    right: "-1%",
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "black",

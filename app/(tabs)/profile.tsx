@@ -263,7 +263,7 @@ export default function TabTwoScreen() {
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>About</Text>
               <Text style={styles.modalText}>
-                Here are your completed quests.
+                SideQuest is made by a team of four students at Brown University!
               </Text>
 
               <TouchableOpacity
@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: "10%",
+    marginVertical: "5%",
     shadowColor: "#7F235A",
     shadowOffset: { height: 10, width: 0 },
     shadowOpacity: 1,
@@ -417,12 +417,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#EC2C5D",
     borderRadius: 20,
     width: "80%",
-    height: 50,
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#7F235A",
     shadowOffset: { height: 10, width: 0 },
     shadowOpacity: 1,
     shadowRadius: 1,
+    marginVertical: "5%",
   },
 });
