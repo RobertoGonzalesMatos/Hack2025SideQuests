@@ -6,12 +6,14 @@ import {
   View,
   Text,
   TouchableOpacity,
+  ImageBackground
 } from "react-native";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { useLocalSearchParams } from "expo-router";
 import Avatar from "@/components/Avatar";
 import { User } from "firebase/auth";
 import { UserData } from "./_layout";
+import { Video } from "expo-av";
 
 export default function TabTwoScreen() {
   const params = useLocalSearchParams();
@@ -53,6 +55,11 @@ export default function TabTwoScreen() {
 
   return (
     <View style={styles.container}>
+      <ImageBackground
+                source={require("../../assets/gifs/sparkle4.gif")}
+                resizeMode="cover"
+                style={styles.backgroundImage} />
+              <View style={styles.videoOverlay} />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {/* Profile Picture and Username */}
         <View style={styles.profileContainer}>
@@ -150,5 +157,22 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 20,
     fontFamily: "PixelOperator-Bold",
+  },
+  videoOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(36, 16, 59, 0.55)', // Adjust the opacity as needed
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '120%',
+    height: '120%',
   },
 });

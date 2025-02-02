@@ -39,9 +39,10 @@ const auth = initializeAuth(app, {
 
 import OpenAI from "openai";
 import Constants from "expo-constants";
+import { OPENAI_API_KEY } from "../passcode";
 
 const openai = new OpenAI({
-  apiKey:,
+  apiKey: OPENAI_API_KEY,
 });
 const db = getFirestore(app);
 export { auth, db, openai };
