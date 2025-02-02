@@ -82,7 +82,7 @@ export default function Avatar({
       <View
         style={[
           styles.badgeContainer,
-          { width: size * 0.35, height: size * 0.35 },
+          { width: size * 0.35, height: size * 0.35, bottom: size*0.15, right: size*-0.6},
         ]}
       >
         <Image source={getBadge()} style={styles.badgeImage} />
@@ -133,9 +133,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   badgeContainer: {
-    position: "absolute",
-    bottom: "0%",
-    right: "-1%",
+    position: "relative",
+    bottom: "5%",
+    right: -30,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "black",
