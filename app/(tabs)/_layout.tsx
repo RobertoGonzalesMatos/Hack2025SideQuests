@@ -29,12 +29,14 @@ async function createUserDoc(user: User) {
       score: 0,
       avatarUrl: "https://hackatbrown.org/img/logo.png", // Default avatar
       latestSidequest: "none",
+      followingUsers: [],
     });
     console.log("User document created in Firestore");
   }
 }
 
 export interface UserData {
+  uid: string;
   displayName: string;
   followers: number;
   following: number;
@@ -42,6 +44,10 @@ export interface UserData {
   avatarUrl: string;
   latestPost: string;
   latestSidequest: string;
+  followingUsers: string[];
+  finishedBig: boolean;
+  team: string;
+  vs: string;
 }
 
 export default function TabLayout() {
