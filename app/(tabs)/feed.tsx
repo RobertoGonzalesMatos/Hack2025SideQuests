@@ -86,7 +86,6 @@ export default function UsersScreen() {
                 <Text style={styles.sidequestText}>{user.latestSidequest}</Text>
               </View>
             </View>
-            {index < usersData.length - 1 && <View style={styles.horizontalLine} />}
 
           </View>
         ))}
@@ -99,7 +98,12 @@ const styles = StyleSheet.create({
   userContainer: {
     alignItems: "center",
     marginBottom: 40,
-    width: "100%",
+    width: "110%",
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 20,
+    padding: 10,
+    paddingBottom: 30,
+    
   },
 
   imageContainer: {
@@ -123,6 +127,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginBottom: 10,
     width: "100%",
+    paddingHorizontal: 20
   },
   statsContainer: {
     flexDirection: "row",

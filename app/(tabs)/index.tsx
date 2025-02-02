@@ -330,7 +330,10 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      <View>
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
         {loading ? (
           // ✅ Show spinning wheel while loading
           <ActivityIndicator
@@ -402,9 +405,10 @@ export default function HomeScreen() {
             </TouchableOpacity>
           ))
         )}
+        </ScrollView>
+
       </View>
-      {/* </ScrollView> */}
-    </View>
+    // </View>
   );
 }
 const fetchQuestsBigField = async () => {
@@ -523,6 +527,7 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   goldenTicketAnnounceText: {
+    marginTop: '20%',
     color: "white",
     fontSize: 40,
     fontFamily: "PixelOperatorBold",
@@ -697,7 +702,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(36, 16, 59, 0.55)', // Adjust the opacity as needed
+    backgroundColor: 'rgba(25, 3, 37, 0.55)', // Adjust the opacity as needed
   },
   questBox: {
     borderWidth: 2,
@@ -712,5 +717,10 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     fontFamily: 'PixelOperator-Bold'
+  },
+  scrollViewContent: {
+    marginTop: 10,
+    // alignItems: "center",
+    width: '100%'
   },
 });
