@@ -23,6 +23,7 @@ import Avatar from "@/components/Avatar";
 import { User } from "firebase/auth";
 import { UserData } from "./_layout";
 import { Video } from "expo-av";
+
 import { auth } from "../_layout";
 
 export default function TabTwoScreen() {
