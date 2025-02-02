@@ -17,7 +17,7 @@ import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useState, useEffect, useRef } from "react";
 import { VideoSource, useVideoPlayer, VideoView } from "expo-video";
 import { AVPlaybackStatus, Video } from "expo-av";
@@ -43,6 +43,7 @@ import {
   where,
 } from "firebase/firestore";
 import { UserData } from "./_layout";
+import React from "react";
 
 interface quest {
   id: number;
@@ -69,6 +70,8 @@ export default function HomeScreen() {
   const [gemQuests, setGemQuests] = useState<quest[]>([]);
   const [bigQuestType, setBigQuestType] = useState<string>("");
   const [questwith, setQuestWith] = useState<string>("");
+  const [questcompleted, setquestCompleted] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const parseSidequests = (responseText: string): quest[] => {
     const quests: quest[] = [];
@@ -80,14 +83,36 @@ export default function HomeScreen() {
       if (match) {
         quests.push({
           id: index + 1,
-          description: match[1].trim().slice(3), // Extracts the challenge description
-          points: parseInt(match[2], 10), // Extracts the points
+          description: match[1].trim().slice(3),
+          points: parseInt(match[2], 10),
           disabled: false,
         });
       }
     });
 
     return quests;
+  };
+
+  const fetchQuestsCompletedQuest = async () => {
+    setRefreshing(true);
+    try {
+      const db = getFirestore();
+      const questsRef = doc(db, "metadata", "Quests");
+      const questSnap = await getDoc(questsRef);
+
+      if (questSnap.exists()) {
+        const data = questSnap.data();
+        setRefreshing(false);
+        return data.completed || false;
+      } else {
+        console.error("No such document!");
+        setRefreshing(false);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error fetching big field from quests: ", error);
+      return false;
+    }
   };
 
   const handlePropGeneration = async () => {
@@ -107,12 +132,11 @@ export default function HomeScreen() {
         ],
       });
 
-      // Make sure that `completion` has the expected structure
       if (completion && completion.choices && completion.choices.length > 0) {
         if (!completion.choices[0].message.content) {
           return;
         }
-        const responseText = completion.choices[0].message.content.trim(); // Ensure it's a string
+        const responseText = completion.choices[0].message.content.trim();
         if (responseText) {
           const parsedQuests = parseSidequests(responseText);
           setGemQuests(parsedQuests);
@@ -148,8 +172,15 @@ export default function HomeScreen() {
     }
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchQuestsCompletedQuest().then((result) => setquestCompleted(result));
+    }, [])
+  );
+
   useEffect(() => {
     handlePropGeneration();
+    fetchQuestsCompletedQuest().then((result) => setquestCompleted(result));
     const interval = setInterval(() => {
       setTimeUntilMidnight(getTimeUntilMidnight());
     }, 60000);
@@ -191,16 +222,26 @@ export default function HomeScreen() {
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={fetchQuestsCompletedQuest}
+          />
+        }
       > */}
       <Text style={styles.goldenTicketAnnounceText}>GOLD-TIER QUEST!</Text>
       <TouchableOpacity
-        style={styles.goldenTicketImage}
+        style={[
+          styles.goldenTicketImage,
+          questcompleted ? styles.disabledQuest : {},
+        ]}
         onPress={() => {
           setModalVisible(true);
           setIsSpinVisible(true);
           setIsGotItVisible(false);
           lottoOpacity.value = 1.0;
         }}
+        disabled={questcompleted}
       >
         <ImageBackground
           source={require("../../assets/images/ticketGold.png")}
@@ -232,10 +273,10 @@ export default function HomeScreen() {
                 >
                   <ImageBackground
                     source={require("../../assets/images/ticketGold.png")}
-                    style={styles.goldenTicketImage}
+                    style={[styles.goldenTicketImage]}
                     resizeMode="contain"
                   >
-                    <Text style={styles.goldenTicketText}>200</Text>
+                    <Text style={[styles.goldenTicketText]}>500</Text>
                   </ImageBackground>
                   <Text style={styles.goldenTicketDescriptionText}>
                     Win a Hackathon.
@@ -273,7 +314,10 @@ export default function HomeScreen() {
                   onPress={() => {
                     handlePlayVideo();
                     setIsSpinVisible(false);
-                    assignOpponentOrTeam(bigQuestType).then((result) => {
+                    assignOpponentOrTeam(
+                      bigQuestType,
+                      auth.currentUser!.uid
+                    ).then((result) => {
                       setQuestWith(result);
                     });
                   }}
@@ -297,6 +341,7 @@ export default function HomeScreen() {
                       router.push({
                         pathname: "/camera",
                         params: {
+                          points: "500",
                           quest: "Quest * Win a hackathon",
                         },
                       });
@@ -424,7 +469,7 @@ const getQuestDescription = (bigQuestType: string) => {
   }
 };
 
-const assignOpponentOrTeam = async (bigQuestType: string) => {
+const assignOpponentOrTeam = async (bigQuestType: string, uid: string) => {
   if (bigQuestType === "ffa") {
     return "";
   }
@@ -435,7 +480,9 @@ const assignOpponentOrTeam = async (bigQuestType: string) => {
 
     const users: UserData[] = [];
     querySnapshot.forEach((doc) => {
-      users.push(doc.data() as UserData);
+      if (doc.id != uid) {
+        users.push(doc.data() as UserData);
+      }
     });
 
     const randomUser = users[Math.floor(Math.random() * users.length)];

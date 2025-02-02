@@ -57,7 +57,7 @@ export default function UsersScreen() {
         showsHorizontalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={fetchUsersData} />
-        } // ✅ Pull-to-refresh logic
+        }
       >
         {usersData.map((user, index) => (
           <View key={index} style={styles.userContainer}>
