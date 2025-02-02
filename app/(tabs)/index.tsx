@@ -31,7 +31,18 @@ import Animated, {
   withSequence,
   cancelAnimation,
 } from "react-native-reanimated";
-import { openai } from "../_layout";
+import { auth, openai } from "../_layout";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { UserData } from "./_layout";
 
 interface quest {
   id: number;
@@ -56,6 +67,8 @@ export default function HomeScreen() {
   const gotItOpacity = useSharedValue(0);
   const { user } = useLocalSearchParams(); // Get user from params
   const [gemQuests, setGemQuests] = useState<quest[]>([]);
+  const [bigQuestType, setBigQuestType] = useState<string>("");
+  const [questwith, setQuestWith] = useState<string>("");
 
   const parseSidequests = (responseText: string): quest[] => {
     const quests: quest[] = [];
@@ -80,6 +93,9 @@ export default function HomeScreen() {
   const handlePropGeneration = async () => {
     setLoading(true);
     try {
+      fetchQuestsBigField().then((result: string) => {
+        setBigQuestType(result);
+      });
       const completion = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
@@ -139,6 +155,7 @@ export default function HomeScreen() {
     }, 60000);
     return () => clearInterval(interval);
   }, []);
+  const video2 = useRef<Video>(null);
 
   const video = useRef<Video>(null);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
@@ -148,6 +165,14 @@ export default function HomeScreen() {
       video.current.playAsync();
     }
   };
+
+  const videoMap: Record<string, any> = {
+    vs: require("../../assets/videos/vs.mp4"),
+    teams: require("../../assets/videos/teams.mp4"),
+    ffa: require("../../assets/videos/ffa.mp4"),
+  };
+
+  const videoSource = videoMap[bigQuestType] || videoMap["vs"];
 
   function getTimeUntilMidnight() {
     const now = new Date();
@@ -220,6 +245,14 @@ export default function HomeScreen() {
               <Text style={styles.modalAnnounceText}>
                 SPIN TO GET YOUR GOLD SIDEQUEST!
               </Text>
+              <Video
+                style={styles.video2}
+                ref={video2}
+                source={videoSource}
+                useNativeControls={false}
+                shouldPlay={true}
+                isLooping={false}
+              />
               <Animated.View
                 style={[styles.animatedLotto, { opacity: lottoOpacity }]}
               >
@@ -240,6 +273,9 @@ export default function HomeScreen() {
                   onPress={() => {
                     handlePlayVideo();
                     setIsSpinVisible(false);
+                    assignOpponentOrTeam(bigQuestType).then((result) => {
+                      setQuestWith(result);
+                    });
                   }}
                 >
                   <Text style={styles.buttonText}>SPIN!</Text>
@@ -248,8 +284,10 @@ export default function HomeScreen() {
               {isGotItVisible && (
                 <Animated.View style={[{ opacity: gotItOpacity }]}>
                   <Text style={styles.goldenTicketDescriptionText}>
-                    Complete this sidequest before anyone else to get all of the
-                    points!
+                    {questwith}
+                  </Text>
+                  <Text style={styles.goldenTicketDescriptionText}>
+                    {getQuestDescription(bigQuestType)}
                   </Text>
                   <TouchableOpacity
                     style={styles.buttonImage}
@@ -356,6 +394,67 @@ export default function HomeScreen() {
     </View>
   );
 }
+const fetchQuestsBigField = async () => {
+  try {
+    const db = getFirestore();
+    const questsRef = doc(db, "metadata", "Quests");
+    const questSnap = await getDoc(questsRef);
+
+    if (questSnap.exists()) {
+      const data = questSnap.data();
+      return data.big || "";
+    } else {
+      console.error("No such document!");
+      return "";
+    }
+  } catch (error) {
+    console.error("Error fetching big field from quests: ", error);
+    return "";
+  }
+};
+
+const getQuestDescription = (bigQuestType: string) => {
+  switch (bigQuestType) {
+    case "vs":
+      return "Defeat your opponent to claim victory and earn points!";
+    case "teams":
+      return "Work together with your team to complete the challenge!";
+    case "ffa":
+      return "Complete this sidequest before anyone else to get all of the points!";
+  }
+};
+
+const assignOpponentOrTeam = async (bigQuestType: string) => {
+  if (bigQuestType === "ffa") {
+    return "";
+  }
+  try {
+    const db = getFirestore();
+    const usersRef = collection(db, "users");
+    const querySnapshot = await getDocs(usersRef);
+
+    const users: UserData[] = [];
+    querySnapshot.forEach((doc) => {
+      users.push(doc.data() as UserData);
+    });
+
+    const randomUser = users[Math.floor(Math.random() * users.length)];
+    const userDocRef = doc(db, "users", auth.currentUser!.uid);
+
+    if (bigQuestType === "vs") {
+      await updateDoc(userDocRef, { vs: randomUser.uid });
+      return randomUser.displayName;
+    } else if (bigQuestType === "teams") {
+      await updateDoc(userDocRef, { team: randomUser.uid });
+      return randomUser.displayName;
+    }
+
+    return "";
+  } catch (error) {
+    console.error("Error assigning opponent/team: ", error);
+    return "Error";
+  }
+};
 
 const styles = StyleSheet.create({
   headerImage: {
@@ -509,6 +608,10 @@ const styles = StyleSheet.create({
   video: {
     width: "100%",
     height: 250,
+  },
+  video2: {
+    width: "100%",
+    height: 60,
   },
   modalAnnounceText: {
     color: "white",
