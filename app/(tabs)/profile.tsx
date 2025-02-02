@@ -281,8 +281,12 @@ const styles = StyleSheet.create({
   statsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 16,
-    width: "80%",
+    width: "90%",
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 20,
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    marginBottom: 15
   },
   statItem: {
     alignItems: "center",
