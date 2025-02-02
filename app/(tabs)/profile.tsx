@@ -93,14 +93,19 @@ export default function TabTwoScreen() {
   return (
     <View style={styles.container}>
       <ImageBackground
-                source={require("../../assets/gifs/sparkle4.gif")}
-                resizeMode="cover"
-                style={styles.backgroundImage} />
-              <View style={styles.videoOverlay} />
+        source={require("../../assets/gifs/sparkle4.gif")}
+        resizeMode="cover"
+        style={styles.backgroundImage}
+      />
+      <View style={styles.videoOverlay} />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {/* Profile Picture and Username */}
         <View style={styles.profileContainer}>
-          <Avatar initialAvatarUrl={userData.avatarUrl} size={100} score={userData.score}/>
+          <Avatar
+            initialAvatarUrl={userData.avatarUrl}
+            size={100}
+            score={userData.score}
+          />
           <Text style={styles.textPOUsername}>{userData.displayName}</Text>
         </View>
 
@@ -128,7 +133,8 @@ export default function TabTwoScreen() {
           onPress={() => setModalVisible("settings")}
           onPressIn={() => setPressed(true)}
           onPressOut={() => setTimeout(() => setPressed(false), 75)}
-          activeOpacity={1}>
+          activeOpacity={1}
+        >
           <Text style={styles.buttonText}> SETTINGS </Text>
         </TouchableOpacity>
 
@@ -138,7 +144,8 @@ export default function TabTwoScreen() {
           onPress={() => setModalVisible("quests")}
           onPressIn={() => setPressed2(true)}
           onPressOut={() => setTimeout(() => setPressed2(false), 75)}
-          activeOpacity={1}>
+          activeOpacity={1}
+        >
           <Text style={styles.buttonText}> COMPLETED QUESTS </Text>
         </TouchableOpacity>
 
@@ -148,7 +155,8 @@ export default function TabTwoScreen() {
           onPress={() => setModalVisible("about")}
           onPressIn={() => setPressed3(true)}
           onPressOut={() => setTimeout(() => setPressed3(false), 75)}
-          activeOpacity={1}>
+          activeOpacity={1}
+        >
           <Text style={styles.buttonText}> ABOUT </Text>
         </TouchableOpacity>
 
@@ -291,11 +299,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "90%",
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: "rgba(0,0,0,0.6)",
     borderRadius: 20,
     paddingHorizontal: 30,
     paddingVertical: 10,
-    marginBottom: 15
+    marginBottom: 15,
   },
   statItem: {
     alignItems: "center",
@@ -358,21 +366,21 @@ const styles = StyleSheet.create({
     fontFamily: "PixelOperator-Bold",
   },
   videoOverlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(36, 16, 59, 0.55)', // Adjust the opacity as needed
+    backgroundColor: "rgba(36, 16, 59, 0.55)", // Adjust the opacity as needed
   },
   backgroundImage: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    width: '120%',
-    height: '120%',
+    width: "120%",
+    height: "120%",
   },
   modalContainer: {
     flex: 1,
