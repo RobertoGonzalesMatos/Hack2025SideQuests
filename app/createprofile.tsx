@@ -65,16 +65,8 @@ const [usernameFocused, setUsernameFocused] = useState(false);
                 <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={{ flex: 1 }}>
-                  <ImageBackground
-                      source={profilePic ? { uri: profilePic } : require('../assets/images/propicplaceholder.png')}
-                      style={styles.profilePic}
-                      imageStyle={{ borderRadius: 75 }}
-                  />
                     <Image style={styles.frame}
-                    source={require('../assets/images/propicframe.png')}/>
-                  <TouchableOpacity style={{width: 200, alignSelf: 'center'}} onPress={handleAddPhoto}>
-                    <Text style={styles.changePhoto} > change photo </Text>
-                  </TouchableOpacity>
+                    source={require('../assets/profile/hablogo.png')}/>
                   <ScrollView style={styles.scrollContainer}>
                       <ImageBackground
                           source={firstName || firstNameFocused ? require('../assets/images/textinput.png') : require('../assets/images/firstname.png')}
@@ -121,7 +113,7 @@ const [usernameFocused, setUsernameFocused] = useState(false);
                  activeOpacity={1}>
                     <Text style={styles.buttonText} > GO! </Text>
                   </TouchableOpacity>
-              </ImageBackground>
+                  </ImageBackground>
         </TouchableWithoutFeedback>
       </View>
     );
@@ -134,14 +126,16 @@ const [usernameFocused, setUsernameFocused] = useState(false);
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#281C64"
+      backgroundColor: "#281C64",
+      justifyContent: 'center',
+      marginTop: 5,
     },
     frame: {
       width: 150,         
       height: 150,      
       resizeMode: 'contain', 
       alignSelf: 'center',
-      marginTop: 65,
+      marginTop: 95,
       position: 'relative'
     },
     profilePic: {
@@ -191,12 +185,13 @@ const [usernameFocused, setUsernameFocused] = useState(false);
       justifyContent: 'center',
       alignItems: 'center', 
       alignSelf: 'center',
-      marginVertical: 20,
+      marginVertical: 30,
       marginBottom: '40%',
       shadowColor: '#7F235A',
       shadowOffset: { height: 15, width: 0 },
       shadowOpacity: 1,
       shadowRadius: 1,
+      marginTop: 10
     },
     buttonPressed: {
       backgroundColor: '#B5264B',
