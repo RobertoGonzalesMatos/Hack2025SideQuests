@@ -70,7 +70,7 @@ export default function UsersScreen() {
         {usersData.map((user, index) => (
           <View key={index} style={styles.userContainer}>
             <View style={styles.profileContainer}>
-              <Avatar initialAvatarUrl={user.avatarUrl} size={50} />
+              <Avatar initialAvatarUrl={user.avatarUrl} size={50} score={user.score} />
               <Text style={styles.textPOUsername}>{user.displayName}</Text>
             </View>
             <View style={styles.imageContainer}>
